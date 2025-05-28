@@ -47,6 +47,13 @@ public class BookService: IBookService
 
     public async Task UpdateBook(Book book)
     {
+        var books = await _bookRepository.ReadBooks();
+
+        if (books.All(x => x.Id != book.Id))
+        {
+            throw new Exception("Book not found");
+        }
+        
         var bookEntity = new BookEntity
         {
             Id = book.Id,
