@@ -1,0 +1,13 @@
+﻿@model Project.Database.Entities.BookEntity
+
+<h2>@Model.Title</h2>
+
+<p><strong>Author:</strong> @Model.Author</p>
+<p><strong>Published:</strong> @Model.Published.ToShortDateString()</p>
+<p><strong>Genre:</strong> @Model.Genre</p>
+<p><strong>Description:</strong> @Model.Description</p>
+<p><strong>Content:</strong></p>
+<div>@Html.Raw(Model.ContentXml)</div>
+
+<a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">Edit</a>
+<a href="@Url.Action("Index")" class="btn btn-secondary">Back</a>

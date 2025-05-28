@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Project.Core.Models.Book>
+
+@{
+    ViewData["Title"] = "Books List";
+}
+
+<h2 class="text-center mb-4">Books List</h2>
+
+<div class="text-end mb-3">
+    <a class="btn btn-success" asp-action="CreateBook">Add New Book</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Published</th>
+        <th>Genre</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var book in Model)
+    {
+        <tr>
+            <td>@book.Title</td>
+            <td>@book.Author</td>
+            <td>@book.Published.ToString("yyyy-MM-dd")</td>
+            <td>@book.Genre</td>
+            <td>@book.Description</td>
+            <td>
+                <a class="btn btn-info btn-sm" asp-action="ViewBook" asp-route-bookId="@book.Id">View</a>
+                <a class="btn btn-primary btn-sm" asp-action="EditBook" asp-route-bookId="@book.Id">Edit</a>
+                <form class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteBook('@book.Id')">Delete</button>
+                </form>
+
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<script>
+    function deleteBook(id) {
+        if (!confirm("Delete this book?")) return;
+
+        const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+        const token = tokenInput ? tokenInput.value : '';
+
+        fetch(`/Book/DeleteBook?bookId=${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            }
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Failed to delete the book.');
+            }
+        });
+    }
+</script>

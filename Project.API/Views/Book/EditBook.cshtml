@@ -1,0 +1,105 @@
+﻿@model Project.Core.Models.Book
+
+@{
+ViewData["Title"] = "Edit Book";
+}
+
+<link rel="stylesheet" href="~/css/CreateBook.css" asp-append-version="true" />
+
+<h2 style="text-align: center">Edit Book</h2>
+
+<form id="editBookForm" asp-action="UpdateBook" class="from-length">
+    @Html.AntiForgeryToken()
+    <a class="btn btn-success" asp-action="Index">Back</a>
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Author"></label>
+        <input asp-for="Author" class="form-control" />
+        <span asp-validation-for="Author" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Published"></label>
+        <input asp-for="Published" type="date" class="form-control" />
+        <span asp-validation-for="Published" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Genre"></label>
+        <input asp-for="Genre" class="form-control" />
+        <span asp-validation-for="Genre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Contents (Table of Contents) - HTML Editor</label>
+        <textarea id="ContentsXml" name="ContentsXml" class="form-control" rows="10">@Model.ContentXml</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+@section Scripts {
+<script src="https://cdn.tiny.cloud/1/nd9dthdmorvphl74tvoxnendcpyv3fyha5eminc0ao2gu1wm/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#ContentsXml',
+        height: 300,
+        width: "100%",
+        maxWidth: 600,
+        menubar: false,
+        plugins: 'lists link image preview',
+        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | preview'
+    });
+</script>
+
+<script>
+    document.getElementById('editBookForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+        
+        const token = formData.get('__RequestVerificationToken');
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert('Book updated successfully');
+                window.location.href = '/Book'; 
+            } else {
+                alert('Failed to update the book');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error during update');
+        }
+});
+</script>
+}

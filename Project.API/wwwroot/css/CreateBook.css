@@ -1,0 +1,14 @@
+﻿.from-length {
+    width: 100%;
+    max-width: 600px; 
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+.create-button {
+    height: 45px;
+    width: 400px;
+    margin: 20px auto;
+}
+

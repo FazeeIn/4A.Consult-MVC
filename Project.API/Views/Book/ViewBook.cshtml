@@ -1,0 +1,25 @@
+﻿@model Project.Core.Models.Book
+
+@{
+ViewData["Title"] = "Book Details";
+}
+
+<h2 class="text-center mb-4">Book Details</h2>
+
+<a class="btn btn-secondary mb-3" asp-action="Index">Back to List</a>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Title</h4>
+        <h6 class="card-subtitle text-muted mb-2">by @Model.Author</h6>
+        <p><strong>Published:</strong> @Model.Published.ToString("yyyy-MM-dd")</p>
+        <p><strong>Genre:</strong> @Model.Genre</p>
+        <p><strong>Description:</strong> @Model.Description</p>
+
+        <hr />
+        <h5>Table of Contents</h5>
+        <div style="border: 1px solid #ccc; padding: 10px;">
+            @Html.Raw(Model.ContentXml)
+        </div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+﻿@model Project.Core.Models.Book
+
+@{
+ViewData["Title"] = "Add New Book";
+}
+
+<link rel="stylesheet" href="~/css/CreateBook.css" asp-append-version="true" />
+
+<h2 style="text-align: center">Add New Book</h2>
+
+<form asp-action="CreateBook" method="post" class="from-length">
+    <a class="btn btn-success" asp-action="Index">Back</a>
+    
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control"/>
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Author"></label>
+        <input asp-for="Author" class="form-control"/>
+        <span asp-validation-for="Author" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Published"></label>
+        <input asp-for="Published" type="date" class="form-control"/>
+        <span asp-validation-for="Published" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Genre"></label>
+        <input asp-for="Genre" class="form-control"/>
+        <span asp-validation-for="Genre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control" ></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Contents (Table of Contents) - HTML Editor</label>
+        <textarea id="ContentsXml" name="ContentsXml" class="form-control" rows="10"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary create-button">Create</button>
+</form>
+
+@section Scripts {
+<script src="https://cdn.tiny.cloud/1/nd9dthdmorvphl74tvoxnendcpyv3fyha5eminc0ao2gu1wm/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#ContentsXml',
+        height: 300,
+        width: "100%",
+        maxWidth: 600,
+        menubar: false,
+        plugins: 'lists link image preview',
+        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | preview'
+    });
+</script>
+}
