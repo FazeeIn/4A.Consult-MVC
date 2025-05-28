@@ -42,7 +42,7 @@ ViewData["Title"] = "Add New Book";
     </div>
 
     <div class="form-group">
-        <label>Contents (Table of Contents) - HTML Editor</label>
+        <label>Contents (Table of Contents) - XML Editor</label>
         <textarea id="ContentsXml" name="ContentsXml" class="form-control" rows="10"></textarea>
     </div>
 
@@ -50,16 +50,26 @@ ViewData["Title"] = "Add New Book";
 </form>
 
 @section Scripts {
-<script src="https://cdn.tiny.cloud/1/nd9dthdmorvphl74tvoxnendcpyv3fyha5eminc0ao2gu1wm/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
-    tinymce.init({
-        selector: '#ContentsXml',
-        height: 300,
-        width: "100%",
-        maxWidth: 600,
-        menubar: false,
-        plugins: 'lists link image preview',
-        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | preview'
-    });
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.14/lib/codemirror.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.14/mode/xml/xml.min.js"></script>
+
+    <script>
+        let editor;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            editor = CodeMirror.fromTextArea(document.getElementById("ContentsXml"), {
+                mode: "application/xml",
+                lineNumbers: true,
+                lineWrapping: true,
+                indentWithTabs: false,
+                smartIndent: true,
+                tabSize: 2
+            });
+        });
+
+        // При отправке формы - положить содержимое редактора обратно в textarea
+        document.querySelector("form").addEventListener("submit", function () {
+            document.getElementById("ContentsXml").value = editor.getValue();
+        });
+    </script>
 }

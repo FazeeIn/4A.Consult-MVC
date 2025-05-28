@@ -107,4 +107,39 @@ public class BookRepository: IBookRepository
 
         await command.ExecuteNonQueryAsync();
     }
+
+    public async Task<List<BookEntity>> GetBooksByTitle(string title)
+    {
+        var bookEntities = new List<BookEntity>();
+
+        await using var connection = new SqlConnection(_connectionString);
+        await using var command = new SqlCommand(@"SELECT TOP 30 * 
+            FROM Books 
+            WHERE ContentXml.exist('/contents/chapter[contains(@title, sql:variable(""@data""))]') = 1 
+            ORDER BY Id", connection);
+        
+        command.Parameters.Add(new SqlParameter("@data", SqlDbType.NVarChar) { Value = title });
+
+        await connection.OpenAsync();
+
+        var reader = await command.ExecuteReaderAsync();
+         
+        while (await reader.ReadAsync())
+        {
+            bookEntities.Add(new BookEntity
+            {
+                Id = (Guid)reader["Id"],
+                Title = (string)reader["Title"],
+                Author = (string)reader["Author"],
+                Published = (DateTime)reader["Published"],
+                Genre = (string)reader["Genre"],
+                Description = (string)reader["Description"],
+                ContentXml = (string)reader["ContentXml"]
+            });
+        }
+
+        await connection.CloseAsync();
+
+        return bookEntities;
+    }
 }

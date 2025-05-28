@@ -1,4 +1,4 @@
-﻿using System.Xml.Linq;
+﻿using System.Xml;
 using FluentValidation;
 using Project.Core.Models;
 
@@ -28,20 +28,49 @@ public class BookValidator : AbstractValidator<Book>
 
         RuleFor(x => x.ContentXml)
             .NotEmpty().WithMessage("ContentXml must not be empty.")
-            .Must(BeValidXml).WithMessage("ContentXml is not valid XML.");
+            .Must(IsValidXml).WithMessage("ContentXml is not valid XML.");
     }
 
-    private bool BeValidXml(string xml)
+    private bool IsValidXml(string xml)
     {
+        var allowedTags = new HashSet<string> { "chapter" };
+        var allowedAttributes = new Dictionary<string, HashSet<string>>
+        {
+            { "chapter", new HashSet<string> { "number", "title" } }
+        };
+
+        var xmlDoc = new XmlDocument();
         try
         {
-            _ = XDocument.Parse(xml);
-                return true;
+            xmlDoc.LoadXml(xml);
         }
-        catch
+        catch (XmlException ex)
         {
-            return false;
+            throw new InvalidOperationException("Неверный XML: " + ex.Message);
+        }
+
+        var root = xmlDoc.DocumentElement;
+        
+        if (root == null || root.Name != "contents")
+            throw new InvalidOperationException("XML должен начинаться с корневого тега <contents>");
+
+        foreach (XmlNode node in root.ChildNodes)
+        {
+            if (node.NodeType != XmlNodeType.Element)
+                continue;
+
+            if (!allowedTags.Contains(node.Name))
+                throw new InvalidOperationException($"Недопустимый тег: <{node.Name}>");
+
+            foreach (XmlAttribute attr in node.Attributes)
+            {
+                if (!allowedAttributes[node.Name].Contains(attr.Name))
+                    throw new InvalidOperationException($"Недопустимый атрибут '{attr.Name}' в теге <{node.Name}>");
+            }
         }
         
+        return true;
     }
+    
+    
 }

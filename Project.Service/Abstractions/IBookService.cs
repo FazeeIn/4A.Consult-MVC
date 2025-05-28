@@ -8,5 +8,6 @@ public interface IBookService
     public Task<IReadOnlyList<Book>> ReadBooks();
     public Task UpdateBook(Book book);
     public Task DeleteBook(Guid bookId);
-    
+    public Task<Book> EditBook(Guid bookId);
+    public Task<List<Book>> GetBooksByTitle(string title);
 }

@@ -1,0 +1,56 @@
+﻿@{
+ViewData["Title"] = "Search Books by Title";
+}
+
+<h2>Search Books by Title</h2>
+
+<input type="text" id="titleInput" class="form-control" placeholder="Enter book title..." />
+
+<table class="table mt-3">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Published</th>
+    </tr>
+    </thead>
+    <tbody id="booksTableBody">
+    <!-- Rows will be dynamically inserted here -->
+    </tbody>
+</table>
+
+@section Scripts {
+<script>
+    const input = document.getElementById('titleInput');
+    const tableBody = document.getElementById('booksTableBody');
+
+    input.addEventListener('input', async function () {
+        const query = input.value.trim();
+
+        const response = await fetch(`/Book/GetBooksByTitle?title=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+            tableBody.innerHTML = '<tr><td colspan="3">Error fetching data</td></tr>';
+            return;
+        }
+
+        const books = await response.json();
+
+        tableBody.innerHTML = '';
+
+        if (books.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="3">No books found</td></tr>';
+            return;
+        }
+
+        for (const book of books) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.published ? book.published.split('T')[0] : ''}</td>
+            `;
+            tableBody.appendChild(row);
+        }
+    });
+</script>
+}

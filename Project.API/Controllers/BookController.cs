@@ -66,15 +66,8 @@ public class BookController: Controller
     [Route("[action]")]
     public async Task<IActionResult> EditBook(Guid bookId)
     {
-        var books = await _bookService.ReadBooks();
-        
-        var book = books.FirstOrDefault(x => x.Id == bookId);
-        
-        if (book == null)
-        {
-            return NotFound();
-        }
-        
+        var book = await _bookService.EditBook(bookId);
+
         return View(book);
     }
     
@@ -128,5 +121,19 @@ public class BookController: Controller
             return NotFound();
         }
         return View(book);
+    }
+    
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetBooksByTitle(string title)
+    {
+        var books = await _bookService.GetBooksByTitle(title);
+
+        return Ok(books);
+    }
+    
+    [HttpGet("[action]")]
+    public IActionResult Search()
+    {
+        return View();
     }
 }
