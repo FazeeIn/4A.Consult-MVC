@@ -1,10 +1,12 @@
-namespace Project.Services.Services;
+using Project.Core.Models;
+
+namespace Project.Services.Abstractions;
 
 public interface IBookService
 {
-    Task CreateBook();
-    Task ReadBook();
-    Task UpdateBook();
-    Task DeleteBook();
+    public Task CreateBook(Book book);
+    public Task<IReadOnlyList<Book>> ReadBooks();
+    public Task UpdateBook(Book book);
+    public Task DeleteBook(Guid bookId);
     
 }
